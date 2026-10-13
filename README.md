@@ -125,20 +125,22 @@ The runtime plugin reads the active profile's Render secret. It never reads Rend
 
 This is a personal development preview under `ojusave`, outside the reviewed Hermes catalog. Recorded checks used Render's Python package, also called its software development kit (SDK), version **1.2.0**. The badges summarize those recorded checks; they are not a continuously running test service.
 
-The local behavior suite recorded **17 passed, 1 skipped**. The skipped process-group test needs Linux; equivalent timeout and child-process behavior passed in a live Render Linux sandbox. The GitHub installer, its credential and dependency prompts, and the installed plugin's real execution path were also tested. [Read the full validation record.](VALIDATION.md)
+The local behavior suite recorded **23 passed, 1 skipped**. The skipped process-group test needs Linux; equivalent timeout and child-process behavior passed in a live Render Linux sandbox. The GitHub installer, its credential and dependency prompts, and the installed plugin's real execution path were also tested. A fresh normal CLI profile synchronized all 328 bundled skill files and completed two chat turns. [Read the full validation record.](VALIDATION.md)
 
-**The main limit is temporary work:** there is no automatic project export, cross-turn persistence, or snapshot/restore. Production load, simultaneous users, crash recovery, additional host operating systems, and interactive command-approval dialogs remain unverified. Organization ownership, licensing, catalog inclusion, and partner approval remain open.
+**Reliability evidence:** 10 repeated sessions, three simultaneous profiles in one workspace, host termination, remote termination, rejected cleanup, and a real connection drop passed. [Results, failure discoveries and exact scope](VALIDATION.md#bounded-reliability-and-real-failures).
+
+**The main limit is temporary work:** there is no automatic project export, cross-turn persistence, or snapshot/restore. Production load, gateway account isolation, resuming interrupted tasks, additional host operating systems, and interactive command-approval dialogs remain unverified. Organization ownership, licensing, catalog inclusion, and partner approval remain open.
 
 <details>
 <summary>All preview limits</summary>
 
 - **Disposable turns:** `terminal.container_persistent` must be `false`. Files and shell state survive commands within the environment. At the pinned Hermes revision, a completed nonpersistent agent turn triggers cleanup. Download wanted project outputs before the turn ends. There is no automatic project-folder upload, patch export, or cross-turn snapshot/restore feature.
-- Hermes's supported skill/cache synchronization is separate from project artifact export. Only pre-existing mapped files synchronize back. It is not a backup of `/workspace`.
+- Hermes's supported skill/cache synchronization is separate from project artifact export. Hermes maps supported state files back to their host locations, including new files under already-mapped directories. Explicit credential files remain upload-only. It is not a backup of `/workspace`.
 - The initial Render filesystem image is used. Custom images, resource overrides beyond `starter`/`standard`/`pro`, preview URLs, interactive terminals and long-lived background services have not been validated.
 - Cancellation covers ordinary child processes. A program that deliberately detaches into another process group is ultimately stopped by sandbox termination or expiry. No broader containment audit is claimed.
 - A command plus standard input is limited to approximately 750 KB before encoding. Large input should be uploaded as a file. UTF-8 output is supported; terminal output is not a binary file-transfer channel.
 - A lost creation response may leave an unobserved sandbox until its lifetime expires. The plugin does not retry creation automatically. Inspect the Render Dashboard before retrying an ambiguous task. Sandbox IDs are logged when known.
-- Gateway concurrency, account switching, sustained load, crash recovery and additional operating systems need review before a general release. The runtime tests use Hermes's existing approval behavior. Installer consent prompts were tested; interactive command-approval dialogs were not.
+- Three concurrent profiles in one workspace passed; gateway concurrency across accounts, sustained load and additional host operating systems need review before a general release. Host-crash containment passed, but interrupted tasks cannot automatically resume. The runtime tests use Hermes's existing approval behavior. Installer consent prompts were tested; interactive command-approval dialogs were not.
 
 </details>
 
@@ -207,7 +209,37 @@ This asks Hermes to analyze a sales CSV, repair a multi-file command-line progra
 
 The runner saves raw reports and downloaded files under the git-ignored `validation/private/scenarios/` directory, plus a sanitized [multi-task report](validation/public/live-scenarios.json). To repeat just one task, add `--case csv_analysis`, `--case multifile_repair`, or `--case sqlite_workflow`.
 
-To use environment-based Render authentication instead of the CLI test flag, supply `RENDER_API_KEY` and `RENDER_WORKSPACE_ID` to the test process and omit `--render-cli-auth`. `RENDER_WORKSPACE_ID` is a test-helper input; normal plugin configuration uses the YAML setting above.
+For the smoke, runtime, feature and model-scenario scripts above, to use environment-based Render authentication instead of the CLI test flag, supply `RENDER_API_KEY` and `RENDER_WORKSPACE_ID` to the test process and omit `--render-cli-auth`. `RENDER_WORKSPACE_ID` is a test-helper input; normal plugin configuration uses the YAML setting above.
+
+</details>
+
+<details>
+<summary>Reliability and ordinary CLI acceptance</summary>
+
+After the development setup above, run these commands in `hermes-render` to exercise repeated sessions, three simultaneous profiles, forced failures and a real connection interruption:
+
+```sh
+.venv/bin/python scripts/live_reliability.py --render-cli-auth
+.venv/bin/python scripts/live_transport.py --render-cli-auth
+```
+
+These commands create paid starter sandboxes, check real results, and verify termination. They require the existing Render CLI login. The reliability check takes about five minutes and uses 16 sandboxes; the connection check uses one. The connection test forwards encrypted traffic through a listener on this computer only, closes the test connection, then restores that process's networking settings. It does not change system-wide networking.
+
+The ordinary GitHub-install test also needs a separate Hermes environment without Render installed. From this same development directory, prepare it once with Hermes's package manager. If `.test-home/installer/base-venv` already exists from an earlier check, skip preparation and run the last command:
+
+```sh
+HERMES_HOME="$PWD/.test-home/installer" \
+HERMES_RUNTIME_DIR="$PWD/.runtime/installer" \
+.venv/bin/python -m pm.build_env \
+  --source ../hermes-agent-reference \
+  --out .test-home/installer/base-venv \
+  --python "$PWD/.venv/bin/python"
+.venv/bin/python scripts/live_onboarding.py --render-cli-auth --codex-login
+```
+
+This test requires a valid existing Codex model login as well as Render access. It installs from GitHub, accepts the installer prompts, applies the sample configuration, and runs two normal CLI chat commands. The first computes 66, verifies Linux and checks the full skill library. The second resumes the conversation and confirms that the prior turn's temporary project file is gone. The pinned Hermes version also creates and cleans up one operating-system probe, making three sandboxes in total. The test removes its temporary credential files; it does not rotate the original model login.
+
+Each runner prints a passing or failed result and writes a sanitized report under `validation/public/`. Raw transcripts and exact resource identifiers stay git-ignored under `validation/private/`. A passing result requires output checks and cleanup, not just the model's final answer. These automated checks do not replace a separate developer trying the guide.
 
 </details>
 

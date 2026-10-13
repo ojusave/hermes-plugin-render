@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-10-13T07:42:05.670871+00:00",
+  "task_owned_count": 44,
+  "areas": {
+    "reliability": 32,
+    "transport": 2,
+    "onboarding": 10
+  },
+  "reported_status_counts": {
+    "errored": 2,
+    "terminated": 42
+  },
+  "every_resource_has_termination_evidence": true,
+  "owned_resources_in_complete_active_listing": 0,
+  "method": "Independent API reads for every resource ID recorded by this task, plus all pages of the active-resource listing. Includes failed attempts and both runtime versions."
+}

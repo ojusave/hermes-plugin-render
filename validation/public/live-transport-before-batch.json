@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "started_at": "2026-10-13T07:20:39.275076+00:00",
+  "method": "Real encrypted TCP stream closed by a test-only local CONNECT forwarder",
+  "source_sha256": {
+    "hermes_render/provider.py": "46b9c215ebb96215e2ad877fe6345cb402b8ac6262c15083d56b7e7975577167",
+    "hermes_render/__init__.py": "9f82b0ce4d29c543d69fa5b8c46b43d8ac0a7a81ab5a298e6bf19a0ef107dfe3",
+    "hermes_render/environment.py": "915aa2b3ef7c58d674bac36964ebf1131af272e89393275626e0fdb68abd4c9e",
+    "hermes_render/process.py": "341a1b3e5ae8c8863ce75dc29f3930b1a4284ceebf01da4f147f9232f7c6304c",
+    "hermes_render/remote_runner.py": "e4fe09fe72ef7518769698d96e7705a670d6abc75d9034415e749f804d4a753a"
+  },
+  "reported_error": "Render command transport failed; completion is unknown.",
+  "connection_failure_reported": true,
+  "observation": {
+    "remote_start_confirmed": true,
+    "cut_at": "2026-10-13T07:20:44.365447+00:00"
+  },
+  "forwarded_connection_count": 3,
+  "broken_environment_refuses_new_command": true,
+  "dispatch_count": 1,
+  "cleanup": {
+    "status": "terminated",
+    "terminated_at": "2026-10-13 07:20:45+00:00",
+    "created_at": "2026-10-13 07:20:39+00:00",
+    "plan": "starter",
+    "region": "oregon",
+    "timeout_seconds": 900,
+    "network_policy": "deny-all"
+  },
+  "all_cleanup_verified": true,
+  "finished_at": "2026-10-13T07:20:45.689345+00:00"
+}

@@ -1,0 +1,521 @@
+{
+  "started_at": "2026-10-13T07:12:11.620265+00:00",
+  "status": "passed",
+  "repeat_sessions": [
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:12:19+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:12:23.823968+00:00",
+      "work_started_at": "2026-10-13T07:12:23.826277+00:00",
+      "work_finished_at": "2026-10-13T07:12:41.897766+00:00",
+      "finished_at": "2026-10-13T07:12:43.175877+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:12:57+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:13:01.226985+00:00",
+      "work_started_at": "2026-10-13T07:13:01.228461+00:00",
+      "work_finished_at": "2026-10-13T07:13:19.849516+00:00",
+      "finished_at": "2026-10-13T07:13:21.263531+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:13:22+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:13:26.949852+00:00",
+      "work_started_at": "2026-10-13T07:13:26.951539+00:00",
+      "work_finished_at": "2026-10-13T07:13:45.878437+00:00",
+      "finished_at": "2026-10-13T07:13:47.298759+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:13:48+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:13:53.010210+00:00",
+      "work_started_at": "2026-10-13T07:13:53.014123+00:00",
+      "work_finished_at": "2026-10-13T07:14:12.088698+00:00",
+      "finished_at": "2026-10-13T07:14:13.488940+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:14:14+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:14:19.013558+00:00",
+      "work_started_at": "2026-10-13T07:14:19.015234+00:00",
+      "work_finished_at": "2026-10-13T07:14:37.128862+00:00",
+      "finished_at": "2026-10-13T07:14:38.561103+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:14:40+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:14:44.258119+00:00",
+      "work_started_at": "2026-10-13T07:14:44.259166+00:00",
+      "work_finished_at": "2026-10-13T07:15:03.398714+00:00",
+      "finished_at": "2026-10-13T07:15:04.755536+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:15:06+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:15:10.612300+00:00",
+      "work_started_at": "2026-10-13T07:15:10.613925+00:00",
+      "work_finished_at": "2026-10-13T07:15:29.152544+00:00",
+      "finished_at": "2026-10-13T07:15:30.465271+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:15:31+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:15:35.658626+00:00",
+      "work_started_at": "2026-10-13T07:15:35.659664+00:00",
+      "work_finished_at": "2026-10-13T07:15:54.124918+00:00",
+      "finished_at": "2026-10-13T07:15:55.358227+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:15:56+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:16:00.720768+00:00",
+      "work_started_at": "2026-10-13T07:16:00.721236+00:00",
+      "work_finished_at": "2026-10-13T07:16:19.771138+00:00",
+      "finished_at": "2026-10-13T07:16:21.298470+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "10 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:16:22+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:16:26.772199+00:00",
+      "work_started_at": "2026-10-13T07:16:26.773014+00:00",
+      "work_finished_at": "2026-10-13T07:16:45.645380+00:00",
+      "finished_at": "2026-10-13T07:16:47.256462+00:00"
+    }
+  ],
+  "parallel_sessions": [
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "12 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:16:49+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:16:53.593711+00:00",
+      "work_started_at": "2026-10-13T07:16:53.795321+00:00",
+      "work_finished_at": "2026-10-13T07:17:15.591176+00:00",
+      "finished_at": "2026-10-13T07:17:16.997908+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "12 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:16:49+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:16:53.412424+00:00",
+      "work_started_at": "2026-10-13T07:16:53.818894+00:00",
+      "work_finished_at": "2026-10-13T07:17:15.436781+00:00",
+      "finished_at": "2026-10-13T07:17:16.841208+00:00"
+    },
+    {
+      "mode": "regular",
+      "status": "passed",
+      "checks": [
+        "12 changing outputs and expected exit codes",
+        "shell variable and working directory retained",
+        "own profile marker uploaded without cross-profile substitution",
+        "downloaded file independently matches expected value",
+        "Render API key absent from cloud environment",
+        "own profile synchronized back; repeated cleanup succeeds"
+      ],
+      "state_at_start": {
+        "status": "running",
+        "terminated_at": null,
+        "created_at": "2026-10-13 07:16:49+00:00",
+        "plan": "starter",
+        "region": "oregon",
+        "timeout_seconds": 300,
+        "network_policy": "deny-all"
+      },
+      "ready_at": "2026-10-13T07:16:53.227846+00:00",
+      "work_started_at": "2026-10-13T07:16:53.841802+00:00",
+      "work_finished_at": "2026-10-13T07:17:15.535642+00:00",
+      "finished_at": "2026-10-13T07:17:17.040613+00:00"
+    }
+  ],
+  "sandbox_count": 16,
+  "source_sha256": {
+    "plugin.yaml": "07ce25dca7d996d24a4547753c4623182c6b5bcc5acea2d174d995f2a7d16950",
+    "__init__.py": "3c3000067c7b1912707a74031e49b1e230d70b4ccea034d0d3cbf2d2827feafd",
+    "hermes_render/__init__.py": "9f82b0ce4d29c543d69fa5b8c46b43d8ac0a7a81ab5a298e6bf19a0ef107dfe3",
+    "hermes_render/environment.py": "915aa2b3ef7c58d674bac36964ebf1131af272e89393275626e0fdb68abd4c9e",
+    "hermes_render/process.py": "341a1b3e5ae8c8863ce75dc29f3930b1a4284ceebf01da4f147f9232f7c6304c",
+    "hermes_render/provider.py": "46b9c215ebb96215e2ad877fe6345cb402b8ac6262c15083d56b7e7975577167",
+    "hermes_render/remote_runner.py": "e4fe09fe72ef7518769698d96e7705a670d6abc75d9034415e749f804d4a753a"
+  },
+  "crash": {
+    "host_exit_code": -9,
+    "requested_lifetime_seconds": 60,
+    "killed_at": "2026-10-13T07:12:18.097791+00:00",
+    "late_child_write_absent": true,
+    "observed_after_expiry": {
+      "status": "errored",
+      "terminated_at": "2026-10-13 07:13:26+00:00",
+      "created_at": "2026-10-13 07:12:13+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 60,
+      "network_policy": "deny-all"
+    },
+    "absent_from_complete_active_listing": true,
+    "status": "passed"
+  },
+  "parallel_work_intervals_overlap": true,
+  "failures": {
+    "checks": [
+      "remote termination raises a connection failure",
+      "broken environment refuses further execution",
+      "new environment works after remote termination",
+      "real unauthorized cleanup fails clearly and stays retryable",
+      "cleanup retry succeeds after restoring authorized connection"
+    ],
+    "status": "passed",
+    "cleanup_errors": []
+  },
+  "cleanup": [
+    {
+      "status": "errored",
+      "terminated_at": "2026-10-13 07:13:26+00:00",
+      "created_at": "2026-10-13 07:12:13+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 60,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:12:42+00:00",
+      "created_at": "2026-10-13 07:12:19+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:13:21+00:00",
+      "created_at": "2026-10-13 07:12:57+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:13:47+00:00",
+      "created_at": "2026-10-13 07:13:22+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:14:13+00:00",
+      "created_at": "2026-10-13 07:13:48+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:14:38+00:00",
+      "created_at": "2026-10-13 07:14:14+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:15:04+00:00",
+      "created_at": "2026-10-13 07:14:40+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:15:30+00:00",
+      "created_at": "2026-10-13 07:15:06+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:15:55+00:00",
+      "created_at": "2026-10-13 07:15:31+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:16:21+00:00",
+      "created_at": "2026-10-13 07:15:56+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:16:47+00:00",
+      "created_at": "2026-10-13 07:16:22+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:17:16+00:00",
+      "created_at": "2026-10-13 07:16:49+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:17:16+00:00",
+      "created_at": "2026-10-13 07:16:49+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:17:16+00:00",
+      "created_at": "2026-10-13 07:16:49+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 300,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:17:21+00:00",
+      "created_at": "2026-10-13 07:17:18+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 900,
+      "network_policy": "deny-all"
+    },
+    {
+      "status": "terminated",
+      "terminated_at": "2026-10-13 07:17:25+00:00",
+      "created_at": "2026-10-13 07:17:22+00:00",
+      "plan": "starter",
+      "region": "oregon",
+      "timeout_seconds": 900,
+      "network_policy": "deny-all"
+    }
+  ],
+  "all_cleanup_verified": true,
+  "finished_at": "2026-10-13T07:17:30.900576+00:00",
+  "scope": "10 sequential sessions, 3 simultaneous profiles in one workspace, host kill, remote termination, real rejected cleanup. No independent human tester or long-duration load claim."
+}
