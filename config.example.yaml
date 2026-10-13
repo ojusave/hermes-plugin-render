@@ -1,0 +1,17 @@
+# Merge into the config.yaml of the Hermes profile where the plugin is installed.
+plugins:
+  enabled:
+    - render
+  entries:
+    render:
+      enabled: true
+      settings:
+        workspace_id: tea-REPLACE_WITH_YOUR_WORKSPACE
+        plan: starter
+        lifetime_seconds: 900
+        network_policy: deny-all
+terminal:
+  backend: render
+  cwd: /workspace
+  container_persistent: false
+  timeout: 60

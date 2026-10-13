@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Hermes skill synchronized to remote workspace",
+    "Hermes execute_code runs Python on Render",
+    "Python kernel retains variables across calls",
+    "Shell environment retained across commands"
+  ],
+  "cleanup_verified": true,
+  "skill_sync_back_verified": true,
+  "publication_note": "Sanitized from the local acceptance report; account and resource identifiers omitted."
+}

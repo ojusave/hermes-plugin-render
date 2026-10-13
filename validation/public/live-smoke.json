@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "installed plugin command dispatch",
+    "Hermes file write/read and Python execution",
+    "Hermes patch tool",
+    "working directory persists across commands",
+    "nonzero exit and stderr",
+    "Render credential absent from sandbox"
+  ],
+  "cleanup_verified": true,
+  "elapsed_seconds": 12.19,
+  "publication_note": "Sanitized from the local acceptance report; account and resource identifiers omitted."
+}

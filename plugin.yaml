@@ -1,0 +1,21 @@
+name: render
+version: 0.1.0a1
+description: Run Hermes command and file tools in temporary Render Sandboxes.
+kind: backend
+requires_env:
+  - RENDER_API_KEY
+python_dependencies:
+  - render>=1.2.0,<1.3
+config_schema:
+  workspace_id:
+    type: str
+    description: Render workspace ID (tea-...) that owns the sandboxes.
+  lifetime_seconds:
+    type: int
+    default: 900
+  plan:
+    type: str
+    default: starter
+  network_policy:
+    type: str
+    default: deny-all

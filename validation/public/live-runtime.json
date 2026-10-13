@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "timeout kills remote command and ordinary children",
+    "Hermes interrupt stops remote child without losing workspace",
+    "stdin and unicode",
+    "large output stream",
+    "binary upload/download preserves bytes",
+    "separate sessions have separate filesystems"
+  ],
+  "cleanup_failures": [],
+  "elapsed_seconds": 28.81,
+  "sandbox_count": 2,
+  "publication_note": "Sanitized from the local acceptance report; account and resource identifiers omitted."
+}

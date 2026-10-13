@@ -1,0 +1,14 @@
+.venv/
+.test-home/
+.runtime/
+.env
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+dist/
+validation/private/
+*.egg-info/
+
+# Raw local test reports include account/resource identifiers.
+/validation/*.json
+.DS_Store
