@@ -10,6 +10,10 @@ import base64
 import json
 import logging
 import shlex
+
+# Build one temporary archive on the host so large skill libraries need one upload.
+import tarfile
+import tempfile
 import threading
 import time
 import uuid
@@ -94,6 +98,8 @@ class RenderEnvironment(BaseEnvironment):
             self._sync_manager = FileSyncManager(
                 get_files_fn=lambda: iter_sync_files(self._remote_state),
                 upload_fn=self._upload,
+                # Hermes supplies only changed, staged files to this batch callback.
+                bulk_upload_fn=self._bulk_upload,
                 delete_fn=self._delete,
                 bulk_download_fn=self._download_state,
             )
@@ -134,6 +140,44 @@ class RenderEnvironment(BaseEnvironment):
             self._api.copy_to(self.sandbox_id, host_path, remote_path)
         except Exception:
             self._sync_error = EnvironmentConnectionError("Render file transfer failed.")
+            raise self._sync_error from None
+
+    def _bulk_upload(self, files):
+        """Send Hermes's selected files together, preserving each remote destination."""
+        # The archive is private on this host and removed when the context exits.
+        # For example, /root/.hermes/skills/a.md becomes root/.hermes/skills/a.md.
+        # Only Hermes's staged file list is included, never the whole host folder.
+        archive = f"/tmp/hermes-push-{uuid.uuid4().hex}.tar"
+        try:
+            with tempfile.NamedTemporaryFile(prefix="hermes-render-push-", suffix=".tar") as local:
+                with tarfile.open(fileobj=local, mode="w", dereference=True) as bundle:
+                    for host_path, remote_path in files:
+                        # Reject destinations that could escape their declared absolute path.
+                        # Staged inputs must contain file bytes, not directories or devices.
+                        destination = PurePosixPath(remote_path)
+                        if (
+                            not destination.is_absolute()
+                            or ".." in destination.parts
+                            or "\x00" in remote_path
+                            or len(destination.parts) < 2
+                            or not Path(host_path).is_file()
+                        ):
+                            raise ValueError("Invalid synchronized file mapping")
+                        bundle.add(host_path, arcname=str(destination).lstrip("/"), recursive=False)
+                # Flush the host file before the Render client reads and uploads it.
+                local.flush()
+                self._api.copy_to(self.sandbox_id, local.name, archive)
+            # Extraction runs on Render. tar creates missing parent folders and preserves
+            # file modes, such as an executable skill script, without changing ownership.
+            # Remove the remote archive even when extraction returns an error.
+            quoted = shlex.quote(archive)
+            self._control(
+                f'tar --no-same-owner -xf {quoted} -C /; result=$?; rm -f {quoted}; exit "$result"'
+            )
+        except Exception:
+            # Hermes catches upload errors internally. Keep a separate failure marker
+            # so _sync() can stop the agent command instead of using incomplete files.
+            self._sync_error = EnvironmentConnectionError("Render batch file transfer failed.")
             raise self._sync_error from None
 
     def _delete(self, paths):
