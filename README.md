@@ -42,13 +42,13 @@ cd hermes-agent-reference
 HERMES_HOME=../hermes-render/.test-home \
 HERMES_RUNTIME_DIR=../hermes-render/.runtime \
 python3 -m pm.build_env \
-  --source ../hermes-render \
+  --source ../hermes-render/dev \
   --out ../hermes-render/.venv \
-  --python python3 --group dev --resolve
+  --python python3 --resolve
 cd ../hermes-render
 ```
 
-Hermes's package manager creates the plugin's `.venv` with the declared dependencies. The adjacent Hermes checkout is an editable development dependency, required by Hermes's source-install policy. The plugin's production dependency is `render>=1.2.0,<1.3`.
+Hermes's package manager creates `.venv` from the separate `dev/` project. That project includes the adjacent Hermes checkout as an editable development dependency. The installed plugin declares only `render>=1.2.0,<1.3`, so its normal installation does not depend on the maintainer's local checkout layout.
 
 The test scripts install a copy of the plugin into separate profiles under `.test-home/`. They do not change your normal Hermes configuration. The acceptance commands below use an existing Render CLI login only when you explicitly pass `--render-cli-auth`.
 

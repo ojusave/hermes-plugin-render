@@ -45,7 +45,7 @@ def main():
             ignore=shutil.ignore_patterns("__pycache__"),
         )
         if label == "source-review":
-            for name in ("tests", "scripts"):
+            for name in ("tests", "scripts", "dev"):
                 shutil.copytree(
                     ROOT / name, target / name, ignore=shutil.ignore_patterns("__pycache__")
                 )

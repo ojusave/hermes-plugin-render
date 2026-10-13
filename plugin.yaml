@@ -3,7 +3,10 @@ version: 0.1.0a1
 description: Run Hermes command and file tools in temporary Render Sandboxes.
 kind: backend
 requires_env:
-  - RENDER_API_KEY
+  - name: RENDER_API_KEY
+    description: API key with access to the Render workspace used for sandboxes.
+    url: https://dashboard.render.com/u/settings
+    secret: true
 python_dependencies:
   - render>=1.2.0,<1.3
 config_schema:
