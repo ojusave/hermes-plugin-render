@@ -1,50 +1,156 @@
-# Run Hermes tools in Render Sandboxes
+<div align="center">
 
-This development preview lets Hermes run commands, edit files and execute Python in a temporary Render Sandbox. Hermes and its model connection stay on the original computer. The sandbox supplies the computer where the requested code runs.
+# Hermes + Render Sandboxes
 
-Hermes calls this connection a **terminal-environment provider plugin**. Selecting `terminal.backend: render` routes its existing tools through the plugin. A skill is a set of instructions an agent follows; it does not by itself change where those tools run.
+**Run Hermes commands, file edits, and Python in a temporary cloud environment.**
 
-```mermaid
-flowchart LR
-  U[User request] --> H[Hermes on the host]
-  H <--> M[Chosen model service]
-  H --> P[Render provider plugin]
-  P -->|Create, execute, transfer| S[Temporary Render Sandbox]
-  S -->|Output, exit status, files| H
-  P -->|Terminate and verify| S
-```
+<p>
+  <a href="#preview-status"><img alt="Status: development preview" src="https://img.shields.io/badge/status-development%20preview-C97C16" /></a>
+  <a href="VALIDATION.md"><img alt="Host Python: 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB?logo=python&amp;logoColor=white" /></a>
+  <a href="VALIDATION.md"><img alt="Render SDK: 1.2.0 tested" src="https://img.shields.io/badge/Render%20SDK-1.2.0%20tested-6E56CF" /></a>
+  <a href="VALIDATION.md"><img alt="Live validation: 4 tasks recorded" src="https://img.shields.io/badge/live%20validation-4%20tasks%20recorded-157F70" /></a>
+</p>
 
-The code-repair task in the tests demonstrates the connection. Other command, file and Python tasks use the same provider.
+[Quick start](#install-from-github) · [Examples](#tested-examples) · [How it works](#how-it-works) · [Validation](VALIDATION.md) · [Development](#development)
+
+</div>
+
+Give [Hermes Agent](https://github.com/NousResearch/hermes-agent) a temporary computer for code repair, data analysis, and file processing. Hermes stays on your laptop or server; its command, file, and Python tools work inside a [Render Sandbox](https://render.com/docs/sandboxes).
+
+This is a **terminal-environment provider plugin**: it connects Hermes's existing tools to Render through `terminal.backend: render`. A skill supplies instructions for an agent; this plugin changes where its supported tools execute.
 
 ## Prerequisites
 
-This is a development preview published under the maintainer's personal account. It is not listed in the Hermes catalog. Tested against Hermes revision `dce1e9b37581dd62e480a9064dc04a709c2940d3`, Python **3.14.3**, and Render's Python package **1.2.0**. Compatibility with other Hermes revisions is not established. Hermes's source is unchanged.
+- **Hermes installed with a working model connection.** This preview was tested against [Hermes revision `dce1e9b`](https://github.com/NousResearch/hermes-agent/tree/dce1e9b37581dd62e480a9064dc04a709c2940d3), with host Python 3.14.3 on macOS. Compatibility with other revisions and host operating systems is unverified.
+- **A Render workspace with [Sandboxes access](https://render.com/docs/sandboxes)** and a paid compute plan. The configuration below uses `starter`; sandbox tasks incur Render usage.
+- **Your Render key and workspace ID**, described below. Keep your existing Hermes model credentials.
 
-You need an installed Hermes environment with that provider interface, an enabled [Render Sandboxes workspace](https://render.com/docs/sandboxes), a paid compute plan, and a configured model connection. The default plan here is `starter`; live tests incur Render usage.
-
-| Value | Purpose and location |
-| --- | --- |
-| `RENDER_API_KEY` | Authorizes the host plugin to create and manage sandboxes. Create it in [Render account settings](https://dashboard.render.com/u/settings), with access to the selected workspace. Store it in the active Hermes profile's `.env`, following Hermes's normal secret setup. |
-| `plugins.entries.render.settings.workspace_id` | Selects the workspace that owns and pays for the sandbox. Use its `tea-...` ID from Render. This is not a secret. |
-| Model credentials | Used by Hermes on the host, separately from Render authentication. Keep your normal Hermes model configuration. |
-
-The runtime plugin never reads the Render CLI or Codex login stores. Local acceptance scripts can explicitly opt into read-only reuse of those existing logins. No account key is sent as part of the sandbox environment.
+| Value | What it is for | Where to put it |
+| --- | --- | --- |
+| `RENDER_API_KEY` | Lets the plugin create and manage sandboxes. Create an API key in [Render account settings](https://dashboard.render.com/u/settings) with access to the selected workspace. | Enter it at the installer's hidden-input prompt. Hermes stores it in the active profile's `.env` file. |
+| `workspace_id` | Identifies the workspace that owns and pays for the sandbox. Use its `tea-...` ID from Render; this value is not a secret. | Replace the placeholder in `config.yaml` below. |
+| Model credentials | Let Hermes connect to your chosen model service, separately from Render. | Keep your normal Hermes model configuration on the host. |
 
 ## Install from GitHub
 
-In a terminal where your existing `hermes` command works, run:
+### 1. Install and enable the plugin
+
+Run this in a terminal on the laptop or server where your `hermes` command already works:
 
 ```sh
 hermes plugins install ojusave/hermes-plugin-render
 ```
 
-Hermes identifies this as a custom source outside its reviewed catalog. If your Render key is not already configured, the installer asks for it with hidden input and stores it in the active profile's `.env`. Answer `y` to enable `render`, then `y` to prepare its Python dependencies, the packages the plugin needs to run. Hermes downloads those packages through its own package manager. Declining leaves the plugin installed but disabled.
+Hermes identifies this repository as a custom source outside its reviewed catalog. If the Render key is missing, enter it at the prompt; the characters are masked. Answer `y` to enable `render`, then `y` to prepare its Python dependencies, the packages it needs to run. Hermes downloads them through its own package manager.
 
-Installing the plugin does not select it for terminal execution. Merge [config.example.yaml](config.example.yaml) into the active profile's `config.yaml`, preserving existing settings and other enabled plugins. Replace the workspace placeholder with your Render workspace ID. The example selects `terminal.backend: render`, the paid `starter` plan, a 900-second lifetime, and blocked outbound networking. Restart Hermes after changing the configuration.
+The verified installation reported:
 
-Run `hermes plugins list --user` to check that `render` is enabled. The GitHub install, hidden credential entry, dependency approval and a subsequent real Render task were verified on the pinned Hermes version above. See the [installation evidence](VALIDATION.md#github-installation-acceptance). A contributor checkout is only needed for developing the plugin or running its acceptance scripts.
+```text
+Plugin render enabled
+```
 
-## Set up the development checkout
+If you decline dependency preparation, the plugin stays installed but disabled. See the [installation acceptance record](VALIDATION.md#github-installation-acceptance) for both paths.
+
+### 2. Select Render for execution
+
+Merge the settings below into the active Hermes profile's `config.yaml`. For the default profile on macOS, this is normally `~/.hermes/config.yaml`. If you use a named profile or a custom `HERMES_HOME`, edit that profile's file instead. Preserve existing settings and other enabled plugins.
+
+Replace `tea-REPLACE_WITH_YOUR_WORKSPACE` with your Render workspace ID. The same example is available in [config.example.yaml](config.example.yaml).
+
+```yaml
+plugins:
+  enabled:
+    - render
+  entries:
+    render:
+      enabled: true
+      settings:
+        workspace_id: tea-REPLACE_WITH_YOUR_WORKSPACE
+        plan: starter
+        lifetime_seconds: 900
+        network_policy: deny-all
+terminal:
+  backend: render
+  cwd: /workspace
+  container_persistent: false
+  timeout: 60
+```
+
+These settings start paid `starter` sandboxes with a 15-minute maximum lifetime and a 60-second command timeout. Outbound networking is blocked by default. The working directory, `/workspace`, is inside the sandbox.
+
+> [!IMPORTANT]
+> Keep `container_persistent: false` for this preview. Files survive commands within one environment, but Hermes cleans up that environment when the agent turn ends. Download any wanted files before then. The plugin does not automatically upload your local project or save generated project files to your computer.
+
+### 3. Restart and check installation
+
+Restart Hermes, then run this in the same host terminal and profile:
+
+```sh
+hermes plugins list --user
+```
+
+Check that `render` appears as enabled. With `terminal.backend: render` selected, Hermes routes its supported command, file, and Python tools to Render. Enabling the plugin alone does not change the execution location.
+
+For a reproducible task with independently checked output, use the [example runner](#run-the-checks) after preparing the development checkout below.
+
+## Tested examples
+
+Four different tasks have run through real Hermes tools in real Render Sandboxes. Each result was downloaded and checked in a **second, fresh sandbox** using original inputs and protected checks.
+
+| Task | Independently verified result | Evidence |
+| --- | --- | --- |
+| Repair a Python function | All five original tests passed; the broken version had failed three. | [Function-repair report](validation/public/live-agent.json) |
+| Analyze a sales CSV | Five paid orders, totaling 5,755 cents. Checks covered duplicates, Unicode, and new and empty inputs. | [CSV report](validation/public/live-scenarios.json) |
+| Fix a multi-file inventory program | Five original tests and three additional checks passed after repairing two source files. | [Inventory report](validation/public/live-scenarios.json) |
+| Import and report with SQLite | Five unique events, totaling 1,450 cents. Repeated imports created no duplicates; an extra event raised the total to 1,475 cents. | [Database report](validation/public/live-scenarios.json) |
+
+The CSV task also passed through a fresh [GitHub-installed copy of the plugin](VALIDATION.md#github-installation-acceptance). Every sandbox from these recorded runs was confirmed terminated. The [validation record](VALIDATION.md) includes tested versions, failure discoveries, cleanup checks, and remaining gaps.
+
+## How it works
+
+Your request reaches Hermes on the host, which can be your laptop or a server. Hermes talks to your chosen model service. When the model requests a supported tool, the plugin creates or uses a Render Sandbox and returns its output to Hermes.
+
+```mermaid
+flowchart TD
+  H[Hermes on your laptop or server] <-->|Requests and responses| M[Chosen model service]
+  H -->|Command, file, or Python tool| P[Render plugin on the same host]
+  P -->|Create, execute, transfer| S[Temporary Render Sandbox]
+  S -->|Output and files| P
+  P -->|Tool result| H
+  P -->|Terminate and verify cleanup| S
+```
+
+The Render key stays on the host and is not injected into the sandbox environment. The plugin uses Hermes's supported provider interface, keeps its existing approval and protected-file rules, and leaves Hermes core unchanged. It does not silently fall back to local execution if Render fails.
+
+The runtime plugin reads the active profile's Render secret. It never reads Render CLI or Codex login stores. The development test scripts can reuse those logins only through explicit flags.
+
+## Preview status
+
+This is a personal development preview under `ojusave`, outside the reviewed Hermes catalog. Recorded checks used Render's Python package, also called its software development kit (SDK), version **1.2.0**. The badges summarize those recorded checks; they are not a continuously running test service.
+
+The local behavior suite recorded **17 passed, 1 skipped**. The skipped process-group test needs Linux; equivalent timeout and child-process behavior passed in a live Render Linux sandbox. The GitHub installer, its credential and dependency prompts, and the installed plugin's real execution path were also tested. [Read the full validation record.](VALIDATION.md)
+
+**The main limit is temporary work:** there is no automatic project export, cross-turn persistence, or snapshot/restore. Production load, simultaneous users, crash recovery, additional host operating systems, and interactive command-approval dialogs remain unverified. Organization ownership, licensing, catalog inclusion, and partner approval remain open.
+
+<details>
+<summary>All preview limits</summary>
+
+- **Disposable turns:** `terminal.container_persistent` must be `false`. Files and shell state survive commands within the environment. At the pinned Hermes revision, a completed nonpersistent agent turn triggers cleanup. Download wanted project outputs before the turn ends. There is no automatic project-folder upload, patch export, or cross-turn snapshot/restore feature.
+- Hermes's supported skill/cache synchronization is separate from project artifact export. Only pre-existing mapped files synchronize back. It is not a backup of `/workspace`.
+- The initial Render filesystem image is used. Custom images, resource overrides beyond `starter`/`standard`/`pro`, preview URLs, interactive terminals and long-lived background services have not been validated.
+- Cancellation covers ordinary child processes. A program that deliberately detaches into another process group is ultimately stopped by sandbox termination or expiry. No broader containment audit is claimed.
+- A command plus standard input is limited to approximately 750 KB before encoding. Large input should be uploaded as a file. UTF-8 output is supported; terminal output is not a binary file-transfer channel.
+- A lost creation response may leave an unobserved sandbox until its lifetime expires. The plugin does not retry creation automatically. Inspect the Render Dashboard before retrying an ambiguous task. Sandbox IDs are logged when known.
+- Gateway concurrency, account switching, sustained load, crash recovery and additional operating systems need review before a general release. The runtime tests use Hermes's existing approval behavior. Installer consent prompts were tested; interactive command-approval dialogs were not.
+
+</details>
+
+## Development
+
+A source checkout is needed only to change the plugin or run its acceptance scripts. Normal users can use the GitHub installation above.
+
+<details>
+<summary>Set up the development checkout</summary>
 
 Install Git and Python 3.14, then open a terminal in your development folder. Clone the plugin into `hermes-render` so the paths below match:
 
@@ -66,7 +172,14 @@ Hermes's package manager creates `.venv` from the separate `dev/` project. That 
 
 The test scripts install a copy of the plugin into separate profiles under `.test-home/`. They do not change your normal Hermes configuration. The acceptance commands below use an existing Render CLI login only when you explicitly pass `--render-cli-auth`.
 
-## Run the checks
+</details>
+
+### Run the checks
+
+<details>
+<summary>Local tests and live Render examples</summary>
+
+Complete the development setup above first. Live commands create paid Render resources; their runners terminate them and record cleanup results.
 
 From that project directory, run:
 
@@ -99,7 +212,10 @@ The runner saves raw reports and downloaded files under the git-ignored `validat
 
 To use environment-based Render authentication instead of the CLI test flag, supply `RENDER_API_KEY` and `RENDER_WORKSPACE_ID` to the test process and omit `--render-cli-auth`. `RENDER_WORKSPACE_ID` is a test-helper input; normal plugin configuration uses the YAML setting above.
 
-## Package and configuration
+</details>
+
+<details>
+<summary>Package the plugin or install a local build</summary>
 
 Run `.venv/bin/python scripts/package_plugin.py` from the project directory. It creates `dist/render/` and `dist/hermes-render-0.1.0a1.tar.gz` using only the runtime plugin and its instructions, then runs Hermes's official validator against that exact payload. Private test profiles, dependencies, credentials and raw local reports are excluded. Sanitized acceptance evidence and synthetic fixtures are included. The script also validates a separate clean copy of all authored development source, including tests and scripts.
 
@@ -107,7 +223,10 @@ Hermes's [manual plugin discovery](https://hermes-agent.nousresearch.com/docs/de
 
 The normal GitHub installer and its dependency-consent flow have been tested in fresh profiles, including a subsequent task through the installed plugin. The manual path above remains useful for local development. Catalog inclusion still requires maintainer review.
 
-## Principles followed
+</details>
+
+<details>
+<summary>Implementation principles</summary>
 
 1. **Use the supported extension.** Register through `register_terminal_environment_provider`; leave Hermes and Render SDK code unchanged. Preserve Hermes's command, file and Python tools instead of introducing competing tools.
 2. **Keep ownership explicit.** Each environment owns one sandbox, with a paid plan, explicit lifetime and outbound network policy. Default outbound traffic is denied. Set `allow-all` only for work that needs it, such as downloading packages.
@@ -116,14 +235,11 @@ The normal GitHub installer and its dependency-consent flow have been tested in 
 5. **Stop and clean up.** A remote supervisor stops a timed-out or interrupted command's ordinary process group. If cancellation cannot be delivered, terminate the sandbox. Cleanup is retryable and checks the resulting resource state.
 6. **Prove results independently.** Test the actual installed plugin and real tools. For the model task, verify the downloaded output with the original tests in a separate sandbox. Record failures and limits, not just the agent's success message.
 
-## Limits of this preview
+</details>
 
-- **Disposable turns:** `terminal.container_persistent` must be `false`. Files and shell state survive commands within the environment. At the pinned Hermes revision, a completed nonpersistent agent turn triggers cleanup. Download wanted project outputs before the turn ends. There is no automatic project-folder upload, patch export, or cross-turn snapshot/restore feature.
-- Hermes's supported skill/cache synchronization is separate from project artifact export. Only pre-existing mapped files synchronize back. It is not a backup of `/workspace`.
-- The initial Render filesystem image is used. Custom images, resource overrides beyond `starter`/`standard`/`pro`, preview URLs, interactive terminals and long-lived background services have not been validated.
-- Cancellation covers ordinary child processes. A program that deliberately detaches into another process group is ultimately stopped by sandbox termination or expiry. No broader containment audit is claimed.
-- A command plus standard input is limited to approximately 750 KB before encoding. Large input should be uploaded as a file. UTF-8 output is supported; terminal output is not a binary file-transfer channel.
-- A lost creation response may leave an unobserved sandbox until its lifetime expires. The plugin does not retry creation automatically. Inspect the Render Dashboard before retrying an ambiguous task. Sandbox IDs are logged when known.
-- Gateway concurrency, account switching, sustained load, crash recovery and additional operating systems need review before a general release. The runtime tests use Hermes's existing approval behavior. Installer consent prompts were tested; interactive command-approval dialogs were not.
+## References and feedback
 
-See [VALIDATION.md](VALIDATION.md) for results, failure discoveries and remaining release work. Official references: [Hermes provider contract](https://hermes-agent.nousresearch.com/docs/developer-guide/terminal-environment-plugin), [Render Python SDK](https://render.com/docs/sandboxes-sdk-python), and [Hermes catalog submission](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/catalog-submission).
+- [Hermes provider contract](https://hermes-agent.nousresearch.com/docs/developer-guide/terminal-environment-plugin): the extension interface used by this plugin.
+- [Render Python SDK](https://render.com/docs/sandboxes-sdk-python): sandbox creation, execution, file transfer, and cleanup.
+- [Hermes catalog submission](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/catalog-submission): the separate review process for catalog inclusion.
+- [Report an issue](https://github.com/ojusave/hermes-plugin-render/issues): include your Hermes revision, host Python version, and a minimal example. Remove credentials and private data from logs before sharing them.
