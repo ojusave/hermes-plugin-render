@@ -73,6 +73,16 @@ For the actual model-driven task, run:
 
 This uses the existing Codex access token without refreshing or writing that login. It gives Hermes a synthetic broken function and five tests. A tool-completion callback downloads the changed file before Hermes's ordinary end-of-turn cleanup. A second clean sandbox then runs the unchanged original tests against that downloaded file. See [the actual result](validation/public/live-agent.json) and [the verified function](validation/agent-artifacts/verified_totals.py).
 
+To test three different model-driven tasks, run:
+
+```sh
+.venv/bin/python scripts/live_scenarios.py --render-cli-auth --codex-login
+```
+
+This asks Hermes to analyze a sales CSV, repair a multi-file command-line program, and build a SQLite import-and-report workflow. Each task runs in its own Render Sandbox. Its downloaded files are checked in a second fresh sandbox against original inputs and additional checks that Hermes cannot edit. The database check repeats the import and adds a new event; the CSV check also uses new and empty inputs. Six sandboxes are created and terminated for a complete run.
+
+The runner saves raw reports and downloaded files under the git-ignored `validation/private/scenarios/` directory, plus a sanitized [multi-task report](validation/public/live-scenarios.json). To repeat just one task, add `--case csv_analysis`, `--case multifile_repair`, or `--case sqlite_workflow`.
+
 To use environment-based Render authentication instead of the CLI test flag, supply `RENDER_API_KEY` and `RENDER_WORKSPACE_ID` to the test process and omit `--render-cli-auth`. `RENDER_WORKSPACE_ID` is a test-helper input; normal plugin configuration uses the YAML setting above.
 
 ## Package and configuration
