@@ -108,16 +108,13 @@ The CSV task also passed through a fresh [GitHub-installed copy of the plugin](V
 
 ## How it works
 
-Your request reaches Hermes on the host, which can be your laptop or a server. Hermes talks to your chosen model service. When the model requests a supported tool, the plugin creates or uses a Render Sandbox and returns its output to Hermes.
+Your request reaches Hermes on the host, which can be your laptop or a server. Hermes talks to your chosen model service. When the model requests a supported tool, the plugin creates or uses a Render Sandbox and returns its output to Hermes. After the turn, Hermes asks the plugin to terminate the sandbox and verify cleanup.
 
 ```mermaid
 flowchart TD
-  H[Hermes on your laptop or server] <-->|Requests and responses| M[Chosen model service]
-  H -->|Command, file, or Python tool| P[Render plugin on the same host]
-  P -->|Create, execute, transfer| S[Temporary Render Sandbox]
-  S -->|Output and files| P
-  P -->|Tool result| H
-  P -->|Terminate and verify cleanup| S
+  M[Chosen model service] <-->|Requests and responses| H[Hermes on your laptop or server]
+  H <-->|Tool calls and results| P[Render plugin on the same host]
+  P <-->|Commands, files, and output| S[Temporary Render Sandbox]
 ```
 
 The Render key stays on the host and is not injected into the sandbox environment. The plugin uses Hermes's supported provider interface, keeps its existing approval and protected-file rules, and leaves Hermes core unchanged. It does not silently fall back to local execution if Render fails.
