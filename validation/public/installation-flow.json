@@ -1,0 +1,33 @@
+{
+  "hermes_revision": "dce1e9b37581dd62e480a9064dc04a709c2940d3",
+  "initial_plugin_revision": "ef71230453a24c839e545d24a8b59310f8a6ca1c",
+  "successful_plugin_revision": "99b6a8fb7701f45dec88e7d421e578e47b3e9e42",
+  "host": "macOS, Python 3.14.3",
+  "clean_environment_render_package_absent": true,
+  "decline": {
+    "plugin_enabled": false,
+    "render_package_installed": false
+  },
+  "initial_enable": {
+    "passed": false,
+    "reason": "The dev dependency hermes-agent used a local path while Hermes already included it as a workspace member."
+  },
+  "fix": "Development-only dependencies moved to dev/; API key input marked secret in plugin.yaml.",
+  "normal_install": {
+    "command": "hermes plugins install ojusave/hermes-plugin-render",
+    "enable_answer": "yes",
+    "dependency_answer": "yes",
+    "exit_code": 0,
+    "enabled_after_restart": true,
+    "credential_test_used_synthetic_value": true,
+    "synthetic_value_visible_in_terminal_log": false
+  },
+  "catalog_validation": {
+    "command": "hermes plugins validate <installed-plugin> --install-deps --json",
+    "ok": true,
+    "checks_passed": 14,
+    "warnings": []
+  },
+  "runtime_evidence": "live-installation.json",
+  "publication_note": "Raw CLI logs contain only a synthetic credential entry, and remain private because they include personal filesystem paths. No real credential was typed into the recorded terminal."
+}

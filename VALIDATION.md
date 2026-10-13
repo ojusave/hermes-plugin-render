@@ -32,6 +32,29 @@ Reports: [smoke](validation/public/live-smoke.json), [runtime and interruption](
 
 Hermes's official validator passed on both the clean runtime payload and the complete authored source copy, including tests and scripts, with no warnings. Its registration probe succeeded and found no Hermes core overrides. This is not an independent security audit or catalog acceptance.
 
+## GitHub installation acceptance
+
+The normal `hermes plugins install ojusave/hermes-plugin-render` path was tested from a fresh profile and a clean Hermes environment that did not contain the Render package. The successful installation fetched commit `99b6a8fb7701f45dec88e7d421e578e47b3e9e42` from GitHub.
+
+The first attempt, at `ef71230453a24c839e545d24a8b59310f8a6ca1c`, exposed a real installation failure: the plugin's development dependency pointed to a sibling Hermes checkout, which conflicted with Hermes's managed dependency workspace. The earlier prepared-environment tests did not exercise that path. Development dependencies now live in a separate `dev/` project, and the installed plugin declares only its Render dependency. The API-key manifest entry also now requests hidden input.
+
+| Check | Observed result |
+| --- | --- |
+| Decline dependency preparation | Plugin remained disabled; the clean environment still had no Render package |
+| Credential entry | A synthetic test value was masked on screen and absent from the captured terminal log |
+| Accept enable and dependency prompts | Hermes prepared the dependencies and reported `Plugin render enabled` |
+| Restart and list installed plugins | `render` appeared as enabled, with Git source provenance |
+| Run through the installed copy | Loader path matched the GitHub-installed directory; Render loaded from Hermes's selected dependency environment |
+| Verify actual output | The CSV task passed in its agent sandbox and in a second fresh sandbox, including original, new and empty inputs |
+| Cleanup | Both starter sandboxes terminated; a separate API read confirmed this; the temporary real Render key was removed from the test profile |
+| Catalog validation command | `hermes plugins validate <installed-plugin> --install-deps --json` passed all 14 reported checks with no warnings |
+
+The post-install task took 79.64 seconds including independent verification and cleanup. The original Hermes source remains unmodified. The local suite passed 17 tests with the same documented platform skip, and both clean package validations passed without warnings after the packaging fix.
+
+[Installation-flow receipt](validation/public/installation-flow.json), [live task result](validation/public/live-installation.json), and [installed-copy verification script](scripts/verify_installed.py) preserve the evidence. Raw terminal logs remain git-ignored under `validation/private/installer/`. The script requires an already-installed test profile under `.test-home/`, its matching `HERMES_RUNTIME_DIR`, and explicit flags to reuse existing CLI logins. It does not copy local plugin code over the installed GitHub tree.
+
+This covers the CLI installation and a real task at the recorded versions. It does not establish catalog approval, installer support on other operating systems, or interactive command-approval behavior.
+
 ## Three additional model-driven tasks
 
 The [multi-task runner](scripts/live_scenarios.py) and [scenario inputs and protected checks](scripts/scenario_fixtures.py) exercised three different workflows through real Hermes agents. All passed on their first recorded attempt. The provider runtime was unchanged from commit `cc7d32e8f7483423a20a8d237181b21d73a446be`.
@@ -58,6 +81,6 @@ The [sanitized report](validation/public/live-scenarios.json) records prompts, t
 
 ## Release work still needed
 
-Review Hermes compatibility and lifecycle behavior with maintainers, including whether the next milestone requires state across turns. Test normal interactive installation and dependency consent, gateway account isolation/concurrency, failure recovery and sustained use. Source is published at [ojusave/hermes-plugin-render](https://github.com/ojusave/hermes-plugin-render) as a development preview. Organization ownership, licensing, a reviewed release, catalog submission and partner documentation remain to be agreed. No catalog submission has been made.
+Review Hermes compatibility and lifecycle behavior with maintainers, including whether the next milestone requires state across turns. Test gateway account isolation/concurrency, failure recovery, sustained use and installation on additional operating systems. Source is published at [ojusave/hermes-plugin-render](https://github.com/ojusave/hermes-plugin-render) as a development preview. Organization ownership, licensing, a reviewed release, catalog submission and partner documentation remain to be agreed. No catalog submission has been made.
 
 These checks establish technical feasibility at the pinned versions. Broader compatibility and production readiness remain unverified.

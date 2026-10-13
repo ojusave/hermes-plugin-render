@@ -30,6 +30,20 @@ You need an installed Hermes environment with that provider interface, an enable
 
 The runtime plugin never reads the Render CLI or Codex login stores. Local acceptance scripts can explicitly opt into read-only reuse of those existing logins. No account key is sent as part of the sandbox environment.
 
+## Install from GitHub
+
+In a terminal where your existing `hermes` command works, run:
+
+```sh
+hermes plugins install ojusave/hermes-plugin-render
+```
+
+Hermes identifies this as a custom source outside its reviewed catalog. If your Render key is not already configured, the installer asks for it with hidden input and stores it in the active profile's `.env`. Answer `y` to enable `render`, then `y` to prepare its Python dependencies, the packages the plugin needs to run. Hermes downloads those packages through its own package manager. Declining leaves the plugin installed but disabled.
+
+Installing the plugin does not select it for terminal execution. Merge [config.example.yaml](config.example.yaml) into the active profile's `config.yaml`, preserving existing settings and other enabled plugins. Replace the workspace placeholder with your Render workspace ID. The example selects `terminal.backend: render`, the paid `starter` plan, a 900-second lifetime, and blocked outbound networking. Restart Hermes after changing the configuration.
+
+Run `hermes plugins list --user` to check that `render` is enabled. The GitHub install, hidden credential entry, dependency approval and a subsequent real Render task were verified on the pinned Hermes version above. See the [installation evidence](VALIDATION.md#github-installation-acceptance). A contributor checkout is only needed for developing the plugin or running its acceptance scripts.
+
 ## Set up the development checkout
 
 Install Git and Python 3.14, then open a terminal in your development folder. Clone the plugin into `hermes-render` so the paths below match:
@@ -91,7 +105,7 @@ Run `.venv/bin/python scripts/package_plugin.py` from the project directory. It 
 
 Hermes's [manual plugin discovery](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins) loads a plugin directory under the selected profile's `plugins/` directory. For a manual preview install, copy the **contents** of `dist/render/` into `<profile-home>/plugins/render/`, use Hermes's package manager to prepare the declared dependency, and merge [config.example.yaml](config.example.yaml) into that profile's `config.yaml`. Do not replace unrelated settings. Add `RENDER_API_KEY` to that profile's `.env` and restart Hermes. The live scripts test this discovery path with an isolated profile and an already-prepared dependency environment.
 
-The repository is available for review and development. The normal interactive Git-based installer and dependency-consent flow have not been tested, so the preview instructions use the validated manual discovery path. A passing local validator is not catalog approval.
+The normal GitHub installer and its dependency-consent flow have been tested in fresh profiles, including a subsequent task through the installed plugin. The manual path above remains useful for local development. Catalog inclusion still requires maintainer review.
 
 ## Principles followed
 
@@ -110,6 +124,6 @@ The repository is available for review and development. The normal interactive G
 - Cancellation covers ordinary child processes. A program that deliberately detaches into another process group is ultimately stopped by sandbox termination or expiry. No broader containment audit is claimed.
 - A command plus standard input is limited to approximately 750 KB before encoding. Large input should be uploaded as a file. UTF-8 output is supported; terminal output is not a binary file-transfer channel.
 - A lost creation response may leave an unobserved sandbox until its lifetime expires. The plugin does not retry creation automatically. Inspect the Render Dashboard before retrying an ambiguous task. Sandbox IDs are logged when known.
-- Gateway concurrency, account switching, sustained load, crash recovery and additional operating systems need review before a general release. A local non-interactive Hermes test uses Hermes's existing approval behavior; interactive approval dialogs were not tested.
+- Gateway concurrency, account switching, sustained load, crash recovery and additional operating systems need review before a general release. The runtime tests use Hermes's existing approval behavior. Installer consent prompts were tested; interactive command-approval dialogs were not.
 
 See [VALIDATION.md](VALIDATION.md) for results, failure discoveries and remaining release work. Official references: [Hermes provider contract](https://hermes-agent.nousresearch.com/docs/developer-guide/terminal-environment-plugin), [Render Python SDK](https://render.com/docs/sandboxes-sdk-python), and [Hermes catalog submission](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/catalog-submission).

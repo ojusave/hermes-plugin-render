@@ -1,0 +1,97 @@
+{
+  "installed_revision": "99b6a8fb7701f45dec88e7d421e578e47b3e9e42",
+  "source": "https://github.com/ojusave/hermes-plugin-render.git",
+  "model": "gpt-6.1-sol",
+  "provider": "openai-codex",
+  "render_version": "1.2.0",
+  "runtime_sha256": {
+    "__init__.py": "3c3000067c7b1912707a74031e49b1e230d70b4ccea034d0d3cbf2d2827feafd",
+    "plugin.yaml": "07ce25dca7d996d24a4547753c4623182c6b5bcc5acea2d174d995f2a7d16950",
+    "hermes_render/__init__.py": "9f82b0ce4d29c543d69fa5b8c46b43d8ac0a7a81ab5a298e6bf19a0ef107dfe3",
+    "hermes_render/environment.py": "915aa2b3ef7c58d674bac36964ebf1131af272e89393275626e0fdb68abd4c9e",
+    "hermes_render/process.py": "341a1b3e5ae8c8863ce75dc29f3930b1a4284ceebf01da4f147f9232f7c6304c",
+    "hermes_render/provider.py": "46b9c215ebb96215e2ad877fe6345cb402b8ac6262c15083d56b7e7975577167",
+    "hermes_render/remote_runner.py": "e4fe09fe72ef7518769698d96e7705a670d6abc75d9034415e749f804d4a753a"
+  },
+  "provider_loaded_from_github_install": true,
+  "render_loaded_from_pm_environment": true,
+  "case": {
+    "name": "csv_analysis",
+    "status": "passed",
+    "prompt": "Read /workspace/orders.csv and write analyze.py, runnable as python3 analyze.py INPUT_CSV OUTPUT_JSON. Deduplicate by order_id keeping the first occurrence; include only paid orders. Compute quantity * unit_price as exact integer cents. Output exactly {paid_orders: integer, revenue_cents: integer, regions: {region: revenue_cents}}. Handle CSV quoting, Unicode and header-only input. Use Python's standard library. Run it on orders.csv to create summary.json. Do not change orders.csv. Inspect and explain the actual result.",
+    "tool_calls": [
+      "read_file",
+      "write_file",
+      "terminal",
+      "read_file"
+    ],
+    "sandboxes": [
+      {
+        "purpose": "agent",
+        "plan": "starter",
+        "region": "oregon",
+        "network_policy": "deny-all",
+        "timeout_seconds": 900,
+        "final_status": "terminated",
+        "terminated_at": "2026-10-13 06:33:25+00:00"
+      },
+      {
+        "purpose": "independent_verifier",
+        "plan": "starter",
+        "region": "oregon",
+        "network_policy": "deny-all",
+        "timeout_seconds": 900,
+        "final_status": "terminated",
+        "terminated_at": "2026-10-13 06:33:32+00:00"
+      }
+    ],
+    "cleanup_failures": [],
+    "execution_host": {
+      "system": "Linux",
+      "python": "3.11.2",
+      "render_key_present": false
+    },
+    "agent_completed": true,
+    "api_calls": 5,
+    "final_response": "Created `/workspace/analyze.py` and ran:\n\n```sh\npython3 analyze.py orders.csv summary.json\n```\n\nActual `/workspace/summary.json`:\n```json\n{\n  \"paid_orders\": 5,\n  \"revenue_cents\": 5755,\n  \"regions\": {\n    \"West\": 3990,\n    \"East\": 1040,\n    \"Québec\": 725\n  }\n}\n```\n\nThe duplicate `o2` was counted once; cancelled `o3` and refunded `o6` were excluded. Paid order `o7` counts despite having zero revenue.\n\nVerified exact-cent arithmetic, first-occurrence deduplication, CSV quoting, Unicode, and header-only input. Confirmed `orders.csv` was unchanged.",
+    "protected_inputs_unchanged": [
+      "orders.csv"
+    ],
+    "output_sha256": {
+      "analyze.py": "f87c659f5a298ce3b193e3514691d4bebe5f4986f30f1a81bc5f1791c20c210e",
+      "summary.json": "f7a964c11031d8d9aa7518ee3ecb1c1795b4985bb93f8f2b71fe1ca66c022026"
+    },
+    "independent_verification": {
+      "output": "{\"checks\": [\"downloaded_summary\", \"quoted_csv_and_unicode\", \"paid_status_only\", \"deduplicated_ids\", \"exact_cents\", \"empty_input\", \"new_input\"], \"summary\": {\"paid_orders\": 5, \"revenue_cents\": 5755, \"regions\": {\"East\": 1040, \"West\": 3990, \"Qu\\u00e9bec\": 725}}}\n",
+      "returncode": 0,
+      "cwd_observed": true,
+      "cwd": "/workspace"
+    },
+    "verified_checks": {
+      "checks": [
+        "downloaded_summary",
+        "quoted_csv_and_unicode",
+        "paid_status_only",
+        "deduplicated_ids",
+        "exact_cents",
+        "empty_input",
+        "new_input"
+      ],
+      "summary": {
+        "paid_orders": 5,
+        "revenue_cents": 5755,
+        "regions": {
+          "East": 1040,
+          "West": 3990,
+          "Québec": 725
+        }
+      }
+    },
+    "elapsed_seconds": 79.64
+  },
+  "all_passed": true,
+  "all_terminated": true,
+  "sandbox_count": 2,
+  "temporary_render_credential_removed": true,
+  "publication_note": "Synthetic task; account and resource identifiers omitted. The actual CLI installation and consent checks are described in VALIDATION.md."
+}
