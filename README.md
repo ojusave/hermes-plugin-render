@@ -16,18 +16,18 @@
 
 [Hermes Agent](https://github.com/NousResearch/hermes-agent) is an AI assistant that can run commands and edit files. When you ask it to analyze data or test a code fix, those commands need somewhere to run. A **sandbox** gives them a separate workspace from the computer running your assistant.
 
-This plugin uses [Render Sandboxes](https://render.com/docs/sandboxes), temporary Linux computers in the cloud, for that workspace. Hermes stays on your laptop or server and talks to your chosen model service; its command, file, and Python tools execute on Render. Start with the [small calculation below](#examples), then use the same connection for code repair, data analysis, or file processing.
+This plugin uses [Render Sandboxes](https://render.com/docs/sandboxes), temporary Linux computers in the cloud, for that workspace. Hermes stays on your laptop or server and talks to your chosen model service; its command, file, and Python tools execute on Render. Start with the [CSV example below](#examples), then use the same connection for code repair, data analysis, or file processing.
 
 ## Prerequisites
 
-- **Hermes installed with a working model connection.** This preview was tested against [Hermes revision `dce1e9b`](https://github.com/NousResearch/hermes-agent/tree/dce1e9b37581dd62e480a9064dc04a709c2940d3), with host Python 3.14.3 on macOS. Compatibility with other revisions and host operating systems is unverified.
+- **Hermes running on Python 3.14, with a working model connection.** Python 3.14 is required by this plugin, including when your system has another Python version. Follow the [Hermes installation guide](https://hermes-agent.nousresearch.com/docs/getting-started/installation) to prepare its managed runtime. This preview was tested against [Hermes revision `dce1e9b`](https://github.com/NousResearch/hermes-agent/tree/dce1e9b37581dd62e480a9064dc04a709c2940d3), with host Python 3.14.3 on macOS. Compatibility with other revisions and host operating systems is unverified.
 - **A Render workspace with [Sandboxes access](https://render.com/docs/sandboxes)** and a paid compute plan. The configuration below uses `starter`; sandbox tasks incur Render usage.
 - **Your Render key and workspace ID**, described below. Keep your existing Hermes model credentials.
 
 | Value | What it is for | Where to put it |
 | --- | --- | --- |
 | `RENDER_API_KEY` | Lets the plugin create and manage sandboxes. Create an API key in [Render account settings](https://dashboard.render.com/u/settings) with access to the selected workspace. | Enter it at the installer's hidden-input prompt. Hermes stores it in the active profile's `.env` file. |
-| `workspace_id` | Identifies the workspace that owns and pays for the sandbox. Use its `tea-...` ID from Render; this value is not a secret. | Replace the placeholder in `config.yaml` below. |
+| `workspace_id` | Identifies the workspace that owns and pays for the sandbox. Copy the `tea-...` Workspace ID from the top of that workspace's **Settings** page in the Render Dashboard. This value is not a secret. | Replace the placeholder in `config.yaml` below. |
 | Model credentials | Let Hermes connect to your chosen model service, separately from Render. | Keep your normal Hermes model configuration on the host. |
 
 ## Install from GitHub
@@ -52,7 +52,7 @@ If you decline dependency preparation, the plugin stays installed but disabled.
 
 ### 2. Select Render for execution
 
-Merge the settings below into the active Hermes profile's `config.yaml`. For the default profile on macOS, this is normally `~/.hermes/config.yaml`. If you use a named profile or a custom `HERMES_HOME`, edit that profile's file instead. Preserve existing settings and other enabled plugins.
+Merge the settings below into the active Hermes profile's `config.yaml`. For the default profile on macOS, this is normally `~/.hermes/config.yaml`. If you use a named profile or a custom `HERMES_HOME`, edit that profile's file instead. Preserve existing settings and other enabled plugins. If `plugins:` or `terminal:` already exists, add these fields inside that existing section instead of creating a second section with the same name. Append `render` to an existing `plugins.enabled` list.
 
 Replace `tea-REPLACE_WITH_YOUR_WORKSPACE` with your Render workspace ID. The same example is available in [config.example.yaml](config.example.yaml).
 
@@ -75,10 +75,10 @@ terminal:
   timeout: 60
 ```
 
-These settings start paid `starter` sandboxes with a 15-minute maximum lifetime and a 60-second command timeout. Outbound networking is blocked by default. The working directory, `/workspace`, is inside the sandbox.
+These settings start paid `starter` sandboxes with a requested 15-minute lifetime and a 60-second command timeout. Outbound networking is blocked by default. The working directory, `/workspace`, is inside the sandbox.
 
 > [!IMPORTANT]
-> Keep `container_persistent: false` for this preview. Files survive commands within one environment, but Hermes cleans up that environment when the agent turn ends. Download any wanted files before then. The plugin does not automatically upload your local project or save generated project files to your computer.
+> Keep `container_persistent: false` for this preview. Files survive commands within one environment, but Hermes cleans up that environment when the agent turn ends. For the example below, paste the input into chat and have Hermes display the result before it finishes. Copy that displayed result to keep it. This preview has no user-facing project import or export command, so do not use it for files you need to download later.
 
 ### 3. Restart and check installation
 
@@ -92,25 +92,65 @@ Check that `render` appears as enabled. With `terminal.backend: render` selected
 
 ## Examples
 
-After selecting Render as the backend, open a Hermes chat and try a calculation that needs no input files or extra packages:
+Run `hermes` in the same host terminal to open a chat, then paste this entire prompt. It includes its own input, so no file upload or extra Python package is needed:
 
-> Use Python in `/workspace` to add 12, 24, and 30. Save a JSON object with the computed sum in a `total` field to `report.json`. Read the file back and show me its contents before finishing.
+```text
+Use Python in /workspace to analyze the CSV below. Count each order_id once,
+include only paid orders, and add amount_cents as integers. Save the input as
+orders.csv and the result as summary.json. Read summary.json with your file
+reading tool and show its complete contents before finishing. Also report
+what operating system the terminal is running on.
 
-Check the command and file-reading results in the chat. The report should contain:
+order_id,status,amount_cents
+A,paid,1250
+B,paid,875
+A,paid,1250
+C,cancelled,100
+D,paid,200
 
-```json
-{"total": 66}
+The JSON fields should be paid_orders and total_cents.
 ```
 
-Copy the displayed result if you want to keep it. This preview removes the sandbox when the agent finishes its turn, so a later message does not retain that file.
+The file-reading result should contain these values (spacing and key order can differ):
 
-For a larger task, supply the required inputs and ask Hermes to:
+```json
+{"paid_orders": 3, "total_cents": 2325}
+```
 
-- Fix a Python function and run its tests.
-- Total the paid orders in a CSV file, ignoring duplicates and cancelled orders.
-- Read JSON records into a SQLite database and generate a summary.
+The terminal should report Linux. The duplicate order A is counted once, and cancelled order C is excluded. Copy the displayed JSON to keep the result. After Hermes finishes its turn, the sandbox and its `orders.csv` and `summary.json` files are removed. A later message starts with a fresh workspace.
 
-Give Hermes the input files it needs and ask it to return the output before the turn ends. The plugin does not automatically copy your local project into the sandbox or save generated files back to your computer.
+### Confirm execution and cleanup
+
+A correct answer alone does not prove that a remote tool ran. Inspect the terminal and file-reading tool results, then run this in the **host** terminal:
+
+```sh
+# Show recent Hermes activity, including the Render sandbox IDs it created.
+hermes logs --since 10m --level INFO
+```
+
+Look for `Render sandbox created: sbx-...`. Open the same workspace in the [Render Dashboard](https://dashboard.render.com), open its sandbox group, and match those IDs. After the chat turn, confirm that each sandbox is stopped or terminated. Hermes can also create a short-lived sandbox to detect its operating system, so check every ID from the run.
+
+If an interruption leaves a sandbox running, terminate that exact ID in the Dashboard. If you already use [Render CLI 2.28.0 or later](https://render.com/docs/cli), you can also stop it from the host terminal after checking the selected workspace:
+
+```sh
+# Confirm this is the workspace that owns the sandbox.
+render workspace current --output json
+# Replace the example ID with the sandbox from your Hermes log, then confirm the stop.
+render ea sandboxes stop sbx-REPLACE_WITH_YOUR_SANDBOX
+```
+
+Termination permanently removes the sandbox's files. Check its state again in the Dashboard. The requested lifetime is a fallback if the host disappears, not a reason to skip cleanup verification.
+
+### If setup fails
+
+| What you see | What to check |
+| --- | --- |
+| `render` is installed but disabled | Run `hermes plugins enable render` and accept dependency preparation. Restart Hermes in the same profile. |
+| Python syntax or interpreter errors | Use a Hermes runtime with Python 3.14. Installing another system Python does not change the interpreter that runs Hermes. |
+| Missing key or workspace | Put the key in the active profile through Hermes's setup prompt. Check the `tea-...` ID in `plugins.entries.render.settings.workspace_id`. Never paste the key into chat. |
+| Sandbox creation fails | Confirm the key has access to that workspace and that Sandboxes is enabled. If the response was lost, check for an already-created sandbox before retrying. |
+| Downloading a package or calling a website fails inside the task | The example uses `deny-all` networking. Use its built-in Python libraries. Change the network policy only for a task whose destinations you have reviewed. |
+| A file is missing in the next message | This preview deletes each turn's workspace. Include the input again and return the wanted result before finishing. |
 
 ## How it works
 
@@ -127,20 +167,30 @@ flowchart TD
 
 The Render key stays on the host and is not injected into the sandbox environment. The plugin uses Hermes's supported provider interface, keeps its existing approval and protected-file rules, and leaves Hermes core unchanged. It does not silently fall back to local execution if Render fails.
 
-The plugin reads the Render key from your active Hermes profile.
+The plugin reads the Render key through Hermes's active-profile secret interface. Commands and selected files travel from the host to Render over the SDK connection. Hermes synchronizes its selected skill and cache files, and any credential-file mounts you explicitly configure; `/workspace` project files are not synchronized back. The plugin adds no telemetry or background service. The host makes network requests to Render for creation, execution, file transfer and termination.
 
 ## Preview status
 
 This community preview is installed from GitHub and is outside the reviewed Hermes catalog. It supports temporary work within one agent turn. It does not provide automatic project export, cross-turn persistence, or snapshot restore.
 
-Keep `container_persistent: false` and save wanted files before the turn ends. Hermes's skill and cache synchronization is separate from your project files; it does not back up `/workspace`.
+Keep `container_persistent: false` and copy wanted text results from the chat. Hermes's skill and cache synchronization is separate from your project files; it does not back up `/workspace`.
 
-Commands use the initial Render filesystem image. The plugin does not provide public preview URLs or interactive terminals. A command plus its standard input is limited to about 750 KB; upload larger inputs as files.
+Commands use the initial Render filesystem image. The plugin does not provide public preview URLs or interactive terminals. A command plus its standard input is limited to about 750 KB. The chat example is deliberately small; a general file import/export workflow is not included.
 
 If sandbox creation loses its response, check the Render Dashboard before trying again. The plugin does not automatically retry creation. Known sandbox IDs appear in the logs, and each sandbox also has a maximum lifetime.
+
+## Render skills are separate
+
+For help deploying applications or debugging Render services, use the [official Render skills repository](https://github.com/render-oss/skills). Its [deployment](https://github.com/render-oss/skills/tree/main/skills/render-deploy), [debugging](https://github.com/render-oss/skills/tree/main/skills/render-debug), and [MCP setup](https://github.com/render-oss/skills/tree/main/skills/render-mcp) skills teach Hermes how to manage Render through its connected tools.
+
+Those skills work independently of this sandbox plugin. This repository supplies the sandbox execution provider and does not bundle or maintain copies of Render's skills.
 
 ## References and feedback
 
 - [Hermes provider contract](https://hermes-agent.nousresearch.com/docs/developer-guide/terminal-environment-plugin): the extension interface used by this plugin.
 - [Render Python SDK](https://render.com/docs/sandboxes-sdk-python): sandbox creation, execution, file transfer, and cleanup.
 - [Report an issue](https://github.com/ojusave/hermes-plugin-render/issues): include your Hermes revision, host Python version, and a minimal example. Remove credentials and private data from logs before sharing them.
+
+## License
+
+[MIT](LICENSE). Maintained by Ojus Save. This preview is prepared for Hermes review; publication here does not imply catalog acceptance.

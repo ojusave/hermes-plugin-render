@@ -13,6 +13,7 @@ RUNTIME_FILES = (
     "pyproject.toml",
     "config.example.yaml",
     "README.md",
+    "LICENSE",  # Include the reuse terms in every downloadable plugin bundle.
     "VALIDATION.md",
 )
 
