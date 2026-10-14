@@ -2,7 +2,7 @@
 
 # Hermes + Render Sandboxes
 
-**Run Hermes commands, file edits, and Python in a temporary cloud environment.**
+**Run AI-generated code with Hermes on a temporary cloud computer.**
 
 <p>
   <a href="#preview-status"><img alt="Status: development preview" src="https://img.shields.io/badge/status-development%20preview-C97C16" /></a>
@@ -14,9 +14,9 @@
 
 </div>
 
-Give [Hermes Agent](https://github.com/NousResearch/hermes-agent) a temporary computer for code repair, data analysis, and file processing. Hermes stays on your laptop or server; its command, file, and Python tools work inside a [Render Sandbox](https://render.com/docs/sandboxes).
+[Hermes Agent](https://github.com/NousResearch/hermes-agent) is an AI assistant that can run commands and edit files. When you ask it to analyze data or test a code fix, those commands need somewhere to run. A **sandbox** gives them a separate workspace from the computer running your assistant.
 
-This is a **terminal-environment provider plugin**: it connects Hermes's existing tools to Render through `terminal.backend: render`. A skill supplies instructions for an agent; this plugin changes where its supported tools execute.
+This plugin uses [Render Sandboxes](https://render.com/docs/sandboxes), temporary Linux computers in the cloud, for that workspace. Hermes stays on your laptop or server and talks to your chosen model service; its command, file, and Python tools execute on Render. Start with the [small calculation below](#examples), then use the same connection for code repair, data analysis, or file processing.
 
 ## Prerequisites
 
@@ -92,7 +92,19 @@ Check that `render` appears as enabled. With `terminal.backend: render` selected
 
 ## Examples
 
-After selecting Render as the backend, ask Hermes to do a small task such as:
+After selecting Render as the backend, open a Hermes chat and try a calculation that needs no input files or extra packages:
+
+> Use Python in `/workspace` to add 12, 24, and 30. Save a JSON object with the computed sum in a `total` field to `report.json`. Read the file back and show me its contents before finishing.
+
+Check the command and file-reading results in the chat. The report should contain:
+
+```json
+{"total": 66}
+```
+
+Copy the displayed result if you want to keep it. This preview removes the sandbox when the agent finishes its turn, so a later message does not retain that file.
+
+For a larger task, supply the required inputs and ask Hermes to:
 
 - Fix a Python function and run its tests.
 - Total the paid orders in a CSV file, ignoring duplicates and cancelled orders.
@@ -103,6 +115,8 @@ Give Hermes the input files it needs and ask it to return the output before the 
 ## How it works
 
 Your request reaches Hermes on the host, which can be your laptop or a server. Hermes talks to your chosen model service. When the model requests a supported tool, the plugin creates or uses a Render Sandbox and returns its output to Hermes. After the turn, Hermes asks the plugin to terminate the sandbox and verify cleanup.
+
+The plugin connects Hermes's existing tools to Render through `terminal.backend: render`. Hermes calls this a **terminal-environment provider plugin**. A skill supplies instructions for an agent; this plugin changes where its supported tools execute.
 
 ```mermaid
 flowchart TD
